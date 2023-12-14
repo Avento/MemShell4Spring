@@ -21,6 +21,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Scanner;
 
+/**
+ *  No error inject:
+ <ol>
+ <li>curl http://127.0.0.1:8080/exec?injectPath=/error/ikun</li>
+ <li>curl http://127.0.0.1:8080/error/ikun?cmd=whoami</li>
+ </ol>
+ * @Version v5.3.0-M1 -> v6.1.1
+ * @author jeyiuwai
+ */
+
 @Controller
 @RequestMapping("/exec")
 public class ExecController {
@@ -93,7 +103,7 @@ public class ExecController {
                 mappingHandlerMapping.registerMapping(mapping, handler, method);
                 response.getWriter().println("inject success!");
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
+//                throw new RuntimeException(e);
             }
         }catch (IllegalStateException e) {
             // 处理重复注入的报错
