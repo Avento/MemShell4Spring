@@ -25,14 +25,21 @@
 
 ## 👌 测试版本
 
-| Tested |  JDK   | [spring-boot](https://github.com/spring-projects/spring-boot) | [spring-framework](https://github.com/spring-projects/spring-framework) |
+| Tested |  JDK   |                         spring-boot                          |                       spring-framework                       |
 | :----: | :----: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 |   ✔    | JDK 17 | [3.1.5](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web/3.1.5) | [6.0.13](https://github.com/spring-projects/spring-framework/tree/v6.0.13) |
+|   ✔    | JDK 17 | [3.2.0](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web/3.2.0) | [6.1.1](https://github.com/spring-projects/spring-framework/tree/v6.1.1) |
 |   ✖    | JDK 8  | [2.5.15](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web/2.5.15) | [5.3.27](https://github.com/spring-projects/spring-framework/tree/v5.3.27) |
-|   x    |   x    |                              x                               |                              x                               |
 
-低版本 JDK 的目前会有 jakarta 的问题。
+由于命名空间的问题导致低版本（5.3.x）的 Spring Framework 使用本项目会出现 Jakarta 相关的报错。理论上本项目适配 6.0.x - 6.2.x 之后的版本。
+
+> Java/Jakarta EE Versions and JDK Version Range
+>
+> - Spring Framework 6.2.x: Jakarta EE 9-11 (jakarta namespace): JDK 17-25 (expected)
+> - Spring Framework 6.1.x: Jakarta EE 9-10 (jakarta namespace): JDK 17-23
+> - Spring Framework 6.0.x: Jakarta EE 9-10 (jakarta namespace): JDK 17-21
+> - Spring Framework 5.3.x: Java EE 7-8 (javax namespace): JDK 8-21 (as of 5.3.26)
 
 ## 📒 Todo
 
-适配 低版本 JDK 。
+注入检测
