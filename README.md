@@ -59,7 +59,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 ### 低于 v5.3.0-M1 问题
 
-由于 v5.3.0 以前的代码相差较大，导致一下几个内存马不可用，需要重新评估：
+由于 v5.3.0 以前的代码相差较大，导致以下几个内存马不可用，需要重新评估：
 
 - No1_HandlerMethodShell
 - No6_WelcomePageHandlerMappingShell
