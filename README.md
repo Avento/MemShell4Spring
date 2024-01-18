@@ -19,17 +19,22 @@
 11. ViewResolverShell
 12. HandlerExceptionResolverShell
 
-## 🔍 具体说明
+## 🔍 使用说明
 
-使用方法参考 Postman 配置文件。
+待补充。
 
 ## 👌 测试版本
+
+### 本地文件落地注入测试
 
 | Tested |    JDK    |                         spring-boot                          |                       spring-framework                       |
 | :----: | :-------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 |   ✔    |  JDK 17   | [3.1.5](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web/3.1.5) | [6.0.13](https://github.com/spring-projects/spring-framework/tree/v6.0.13) |
 |   ✔    |  JDK 17   | [3.2.0](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web/3.2.0) | [6.1.1](https://github.com/spring-projects/spring-framework/tree/v6.1.1) |
 |   ✔    | JDK 8_102 | [2.5.15](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web/2.5.15) | [5.3.27](https://github.com/spring-projects/spring-framework/tree/v5.3.27) |
+|   ✖    | JDK 8_102 | [2.3.6](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web/2.3.6.RELEASE) | [5.2.11](https://github.com/spring-projects/spring-framework/tree/v5.2.11.RELEASE) |
+
+### Jakarta 命名空间问题
 
 由于 Jakarta 命名空间的问题导致低版本（5.3.x）的 Spring Framework 使用本项目会出现 Jakarta 相关的报错。理论上本项目适配 6.0.x - 6.2.x 之后的版本。
 
@@ -52,7 +57,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 ```
 
+### 低于 v5.3.0-M1 问题
+
+由于 v5.3.0 以前的代码相差较大，导致以下几个内存马不可用，需要重新评估：
+
+- No1_HandlerMethodShell
+- No6_WelcomePageHandlerMappingShell
+- No7_HandlerMappingShell
+- No12_HandlerExceptionResolverShell
+
 ## 📒 Todo
 
-- [ ] 解决 低于 5.3.x 的报错问题；
-- [ ] 完成无文件注入测试。
+- [ ] 解决 5.3.x 的报错问题；
+- [ ] 完成无文件注入测试；
+- [ ] 低于 v5.3.0-M1 的适配；
+- [ ] 完善使用说明文档；
